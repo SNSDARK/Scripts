@@ -1,5 +1,7 @@
 _G.ScriptKey = "ycYcY9kgPlqG6yymqyTYuZS2fxZcRV24"
 
+--loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/BHR.lua"))()
+
 -------------------------------------------
 if _G.ScriptRunning then return else end
 _G.ScriptRunning = true
@@ -173,33 +175,6 @@ Tab1:AddSlider({
     Callback = function(Value) RangeLimit = Value end
 })
 
-Tab1:AddLabel("This will reset the character to have the wave start over again")
-Tab1:AddToggle({
-    Name = "Auto Reset",
-    Default = false,
-    Save = true,
-    Flag = "IsAutoReset",
-    Callback = function(Value) IsAutoReset = Value end
-})
-
-Tab1:AddLabel("Doing waves? use this toggle for safety in case you get flinged")
-Tab1:AddToggle({
-    Name = "Waves TP Safety",
-    Default = false,
-    Save = true,
-    Flag = "WavesTP",
-    Callback = function(Value) WavesTP = Value end
-})
-
--- Tab 3: Misc Settings
-Tab3:AddToggle({
-    Name = "No Clip",
-    Default = false,
-    Save = true,
-    Flag = "isNoClip",
-    Callback = function(Value) isNoClip = Value end
-})
-
 Tab3:AddLabel("This area is for testing purposes only!")
 local TestingMode = false
 Tab3:AddToggle({
@@ -235,14 +210,6 @@ local LPH = Tab2:AddLabel("Level per Hour: 0")
 local TLG = Tab2:AddLabel("Total Level Gained: 0")
 ------------------------------------------
 -- Functions
-local function ResetPlayer()
-    if replicatesignal then
-        replicatesignal(LocalPlayer.Kill)
-    else
-        LocalPlayer:FindFirstChild("Humanoid").Health = 0
-    end
-end
-
 local function getPlayerRoot()
     local player = game.Players.LocalPlayer
     local pChar = player.Character
@@ -262,51 +229,6 @@ local function LevelGainedCheck()
             TLG:Set("Total Level Gained: " .. tostring(tonumber(PlayerLevel.Text:match("%d+")) - currentLevel))
         else
             currentLevel = tonumber(PlayerLevel.Text:match("%d+"))
-        end
-    end
-end
-
-local function TweentoPosition(targetPos, Boolean)
-    if not Boolean then return end
-    if LocalPlayer.Character.Humanoid.Health <= 0 then return end
-    if typeof(targetPos) ~= "Vector3" then
-        warn("Vector3 expected, got " .. typeof(targetPos))
-        return
-    end
-    if (LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position - targetPos).Magnitude <= 2 then return end
-    while task.wait() do
-        if LocalPlayer.Character.Humanoid.Health <= 0 then return end
-        local playerPos = LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position
-        local direction = (targetPos - playerPos).Unit
-        LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(playerPos + direction)
-        if (playerPos - targetPos).Magnitude <= 4 or not Boolean then break end
-    end
-end
-
-local function TeleportToWaves()
-    WaitWavesReset = true
-    LocalPlayer.CharacterAdded:Wait()
-    VirtualInputManager:SendKeyEvent(true, 119, false, game)
-    task.wait(2)
-    VirtualInputManager:SendKeyEvent(false, 119, false, game)
-    VirtualInputManager:SendKeyEvent(true, 103, false, game)
-    task.wait()
-    VirtualInputManager:SendKeyEvent(false, 103, false, game)
-    if WavesTP then
-        LocalPlayer.Character:WaitForChild("HumanoidRootPart").CFrame = game:GetService("Workspace").City.Shack.TGWPortal.CFrame
-        task.wait(0.7)
-        TweentoPosition(game:GetService("Workspace"):FindFirstChild("ToTPforWaves").Position)
-    end
-    WaitWavesReset = false
-end
-
-local function WavesCheckTP()
-    while task.wait() do
-        if WavesTP and not WaitWavesReset and IsAutoAttacking then
-            if LocalPlayer.Character.Humanoid.Health <= 0 then TeleportToWaves() end
-            TweentoPosition(game:GetService("Workspace"):FindFirstChild("ToTPforWaves").Position, true)
-        elseif not WavesTP and WaitWavesReset and not IsAutoAttacking then
-            TweentoPosition(game:GetService("Workspace"):FindFirstChild("ToTPforWaves").Position, false)
         end
     end
 end
@@ -374,29 +296,6 @@ local function AutoFarmAndLevelMonitor()
                     end
                 end
             end
-        end
-    end
-end
-
-local function AutoResetByLag()
-    local frameRateValues = {}
-    local averageFrameRate = 0
-    local threshold = 45
-    local sampleSize = 100
-    while task.wait(0.1) do
-        local currentFrameRate = game:GetService("Stats").Workspace.Heartbeat:GetValue()
-        table.insert(frameRateValues, currentFrameRate)
-        if #frameRateValues > sampleSize then
-            table.remove(frameRateValues, 1)
-        end
-        local sum = 0
-        for _, value in pairs(frameRateValues) do
-            sum = sum + value
-        end
-        averageFrameRate = sum / #frameRateValues
-        if averageFrameRate < threshold then
-            ResetPlayer()
-            TeleportToWaves()
         end
     end
 end
@@ -478,28 +377,6 @@ local function AutoHit()
     end
 end
 
-local function StartNoClip()
-    local NoClippingStarted
-    local function NoClip()
-        local speaker = LocalPlayer
-        if speaker.Character then
-            for _, child in pairs(speaker.Character:GetDescendants()) do
-                if child:IsA("BasePart") and child.CanCollide then
-                    child.CanCollide = false
-                end
-            end
-        end
-    end
-    while task.wait() do
-        if not isNoClip and NoClippingStarted then
-            NoClippingStarted:Disconnect()
-            NoClippingStarted = nil
-        elseif isNoClip and not NoClippingStarted then
-            NoClippingStarted = game:GetService("RunService").Stepped:Connect(NoClip)
-        end
-    end    
-end
-
 -------------------------------------------
 
 -- Create Platforms
@@ -530,10 +407,7 @@ coroutine.wrap(AutoHit)()
 coroutine.wrap(LevelGainedCheck)()
 coroutine.wrap(AutoSoul)()
 coroutine.wrap(AutoFarmAndLevelMonitor)()
-coroutine.wrap(StartNoClip)()
-coroutine.wrap(WavesCheckTP)()
 coroutine.wrap(RemoveParticles)()
-spawn(function()AutoResetByLag() end)
 
 ScriptStarted = true
 OrionLib:Init()
