@@ -257,9 +257,9 @@ local function NextFloorVote()
                     if not game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.Countdown.Main.Num.Visible and os.clock() - currentTime >= 90 then
                         require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("SubmitVote", "retreat")
                         Evacuate = true
-                        repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.SpectateAndSettle.Visible and game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.SpectateAndSettle.Main.Bottom.Return.Visible
+                        --[[repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.SpectateAndSettle.Visible and game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.SpectateAndSettle.Main.Bottom.Return.Visible
                         task.wait(5)
-                        require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("ReturnToLobby")
+                        require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("ReturnToLobby")]]
                         task.wait(20)
                     end
                 until os.clock() - currentTime >= 120
