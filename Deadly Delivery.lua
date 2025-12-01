@@ -15,7 +15,7 @@ if game.PlaceId == 125810438250765 then
     StartMatch()
 end
 
-if game.PlaceId == 125810438250765 return end
+if game.PlaceId == 125810438250765 then return end
 if getgenv().ScriptStarted then return end
 getgenv().ScriptStarted = true
 local function TweeningService(toTween, TargetPos, Delay)
