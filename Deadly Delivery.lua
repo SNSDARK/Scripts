@@ -101,7 +101,7 @@ local function CheckInteractables(Bool)
                 local ItemPriceText = v.Folder.Interactable.LootUI.Frame.Price.Text
                 local ItemPrice = tonumber(string.match(ItemPriceText, "(%d+)"))
                 local AcceptablePrice = 0
-                if CurrentFloor >= 20 then AcceptablePrice = 40 end; if CurrentFloor >= 15 and CurrentFloor < 20 then AcceptablePrice = 30 end; if CurrentFloor >= 10 and CurrentFloor < 15 then AcceptablePrice = 20 end; if CurrentFloor < 10 then AcceptablePrice = 10 end
+                if CurrentFloor >= 20 then AcceptablePrice = 40 end; if CurrentFloor >= 18 and CurrentFloor < 20 then AcceptablePrice = 30 end; if CurrentFloor >= 10 and CurrentFloor < 18 then AcceptablePrice = 20 end; if CurrentFloor < 10 then AcceptablePrice = 10 end
                 if ItemPrice >= AcceptablePrice then
                     return true
                 end
@@ -128,7 +128,7 @@ local function CollectAllItems()
                 local ItemPriceText = v.Folder.Interactable.LootUI.Frame.Price.Text
                 local ItemPrice = tonumber(string.match(ItemPriceText, "(%d+)"))
                 local AcceptablePrice = 0
-                if CurrentFloor >= 20 then AcceptablePrice = 40 end; if CurrentFloor >= 15 and CurrentFloor < 20 then AcceptablePrice = 30 end; if CurrentFloor >= 10 and CurrentFloor < 15 then AcceptablePrice = 20 end; if CurrentFloor < 10 then AcceptablePrice = 10 end
+                if CurrentFloor >= 20 then AcceptablePrice = 40 end; if CurrentFloor >= 18 and CurrentFloor < 20 then AcceptablePrice = 30 end; if CurrentFloor >= 10 and CurrentFloor < 18 then AcceptablePrice = 20 end; if CurrentFloor < 10 then AcceptablePrice = 10 end
                 CheckFullInv()
                 local ItemParent = v.Parent
                 local hasCollected = false
@@ -286,7 +286,7 @@ local function NextFloorVote()
                     local ItemPriceText = v.Folder.Interactable.LootUI.Frame.Price.Text
                     local ItemPrice = tonumber(string.match(ItemPriceText, "(%d+)"))
                     local AcceptablePrice = 0
-                    if CurrentFloor >= 20 then AcceptablePrice = 40 end; if CurrentFloor >= 15 and CurrentFloor < 20 then AcceptablePrice = 30 end; if CurrentFloor >= 10 and CurrentFloor < 15 then AcceptablePrice = 20 end; if CurrentFloor < 10 then AcceptablePrice = 10 end
+                    if CurrentFloor >= 20 then AcceptablePrice = 40 end; if CurrentFloor >= 18 and CurrentFloor < 20 then AcceptablePrice = 30 end; if CurrentFloor >= 10 and CurrentFloor < 18 then AcceptablePrice = 20 end; if CurrentFloor < 10 then AcceptablePrice = 10 end
                     if ItemPrice >= AcceptablePrice then
                         Check = true
                     end
