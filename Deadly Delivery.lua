@@ -57,6 +57,13 @@ local function TweeningService(toTween, TargetPos, Delay)
     return tween
 end
 
+for _, cnx in pairs(getconnections(game:GetService("RunService").PreRender)) do
+   local src = debug.info(cnx.Function, "s")
+   if src:find("Stamina") then
+       cnx:Disable()
+   end
+end
+
 local function HasPrimaryPart(instance)
     return instance and instance:IsA("Model") and instance.PrimaryPart ~= nil
 end
