@@ -120,6 +120,9 @@ local function CheckInteractables(Bool)
                     return true
                 end
             end
+            if v:IsA("Model") and HasPrimaryPart(v) and v:GetAttribute("en") then
+                return true
+            end
         end
     end
     if Bool == "NPC" or Bool == nil then
@@ -182,6 +185,28 @@ local function CollectAllItems()
                     until not v or v.Parent ~= ItemParent
                 end
                 CheckFullInv()
+            end
+            if v:IsA("Model") and HasPrimaryPart(v) and v:GetAttribute("en") then
+                local initialDelayPassed = false
+                local SecondDelayPassed = false
+                spawn(function()
+                    task.wait(0.1)
+                    initialDelayPassed = true
+                end)
+                spawn(function()
+                    task.wait(0.2)
+                    SecondDelayPassed = true
+                end)
+                repeat task.wait()
+                    local Tweeny = TweeningService(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, CFrame.new(v.PrimaryPart.CFrame.x, v.PrimaryPart.CFrame.y + 10, v.PrimaryPart.CFrame.z), 0.01)
+                    Tweeny.Completed:Wait()
+                    if (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.PrimaryPart.Position).Magnitude < 20 then
+                        if not hasCollected or initialDelayPassed or SecondDelayPassed then
+                            if initialDelayPassed then initialDelayPassed = false end; if SecondDelayPassed then SecondDelayPassed = false end
+                            CollectOpenItem(v)
+                        end
+                    end
+                until not v
             end
         end
     end
@@ -303,6 +328,9 @@ local function NextFloorVote()
                     local AcceptablePrice = 0
                     if CurrentFloor >= 20 then AcceptablePrice = 40 end; if CurrentFloor >= 18 and CurrentFloor < 20 then AcceptablePrice = 30 end; if CurrentFloor >= 10 and CurrentFloor < 18 then AcceptablePrice = 20 end; if CurrentFloor < 10 then AcceptablePrice = 10 end
                     if ItemPrice >= AcceptablePrice then
+                        Check = true
+                    end
+                    if v:IsA("Model") and HasPrimaryPart(v) and v:GetAttribute("en") then
                         Check = true
                     end
                 end
