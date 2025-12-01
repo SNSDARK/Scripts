@@ -13,9 +13,9 @@ if game.PlaceId == 125810438250765 then
         end
     end
     local CurrentLevel = 0
-    if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text >= game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text then
+    if tonumber(game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text) >= tonumber(string.match(game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text, "(%d+)")) then
         while task.wait() do
-            if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text >= game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text then
+            if tonumber(game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text) < tonumber(string.match(game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text, "(%d+)")) then
                 break
             end
             CurrentLevel = CurrentLevel + 1
@@ -120,7 +120,7 @@ local function CheckInteractables(Bool)
                     return true
                 end
             end
-            if v:IsA("Model") and HasPrimaryPart(v) and v:GetAttribute("en") then
+            if v:IsA("Model") and HasPrimaryPart(v) and v:GetAttribute("en") and (v:FindFirstChild("Interactable") and v.Interactable:FindFirstChild("LootUI") and v.Interactable.LootUI:FindFirstChild("Frame") and v.Interactable.LootUI.Frame:FindFirstChild("ItemName") and v.Interactable.LootUI.Frame.ItemName.Text == "Cash") then
                 return true
             end
         end
@@ -186,7 +186,8 @@ local function CollectAllItems()
                 end
                 CheckFullInv()
             end
-            if v:IsA("Model") and HasPrimaryPart(v) and v:GetAttribute("en") then
+            if v:IsA("Model") and HasPrimaryPart(v) and v:GetAttribute("en") and v:HasTag("Interactable") and (v:FindFirstChild("Interactable") and v.Interactable:FindFirstChild("LootUI") and v.Interactable.LootUI:FindFirstChild("Frame") and v.Interactable.LootUI.Frame:FindFirstChild("ItemName") and v.Interactable.LootUI.Frame.ItemName.Text == "Cash") then
+                local hasCollected = false
                 local initialDelayPassed = false
                 local SecondDelayPassed = false
                 spawn(function()
@@ -198,7 +199,7 @@ local function CollectAllItems()
                     SecondDelayPassed = true
                 end)
                 repeat task.wait()
-                    if not v or not HasPrimaryPart(v) then
+                    if not v or not HasPrimaryPart(v) or not v:GetAttribute("en") then
                         break
                     end
                     local Tweeny = TweeningService(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, CFrame.new(v.PrimaryPart.CFrame.x, v.PrimaryPart.CFrame.y + 10, v.PrimaryPart.CFrame.z), 0.01)
@@ -209,7 +210,7 @@ local function CollectAllItems()
                             CollectOpenItem(v)
                         end
                     end
-                until not v or not HasPrimaryPart(v) or v.Parent == nil
+                until not v or not HasPrimaryPart(v) or v.Parent == nil or not v:GetAttribute("en")
             end
         end
     end
@@ -333,7 +334,7 @@ local function NextFloorVote()
                     if ItemPrice >= AcceptablePrice then
                         Check = true
                     end
-                    if v:IsA("Model") and HasPrimaryPart(v) and v:GetAttribute("en") then
+                    if v:IsA("Model") and HasPrimaryPart(v) and v:GetAttribute("en") and (v:FindFirstChild("Interactable") and v.Interactable:FindFirstChild("LootUI") and v.Interactable.LootUI:FindFirstChild("Frame") and v.Interactable.LootUI.Frame:FindFirstChild("ItemName") and v.Interactable.LootUI.Frame.ItemName.Text == "Cash") then
                         Check = true
                     end
                 end
