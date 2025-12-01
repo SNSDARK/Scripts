@@ -14,7 +14,9 @@ if game.PlaceId == 125810438250765 then
     queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/Deadly%20Delivery.lua"))()')
     StartMatch()
 end
-if getgenv().ScriptStarted or game.PlaceId == 125810438250765 then return end
+
+if game.PlaceId == 125810438250765 then return end
+if getgenv().ScriptStarted then return end
 getgenv().ScriptStarted = true
 local function TweeningService(toTween, TargetPos, Delay)
     local TweenService = game:GetService("TweenService")
@@ -249,17 +251,17 @@ local function NextFloorVote()
             if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.Countdown.Visible and not Evacuate then
                 local currentTime = os.clock()
                 repeat task.wait()
-                    if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.Countdown.Main.Num.Visible and os.clock() - currentTime < 10 then
+                    if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.Countdown.Main.Num.Visible and os.clock() - currentTime < 90 then
                         break
                     end
-                    if not game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.Countdown.Main.Num.Visible and os.clock() - currentTime >= 10 then
+                    if not game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.Countdown.Main.Num.Visible and os.clock() - currentTime >= 90 then
                         require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("SubmitVote", "retreat")
                         Evacuate = true
                         repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.SpectateAndSettle.Main.Bottom.Return.Visible
                         require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("ReturnToLobby")
                         task.wait(20)
                     end
-                until os.clock() - currentTime >= 60
+                until os.clock() - currentTime >= 120
             end
         end
     end)
