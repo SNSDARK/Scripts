@@ -198,6 +198,9 @@ local function CollectAllItems()
                     SecondDelayPassed = true
                 end)
                 repeat task.wait()
+                    if not v or not HasPrimaryPart(v) then
+                        break
+                    end
                     local Tweeny = TweeningService(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, CFrame.new(v.PrimaryPart.CFrame.x, v.PrimaryPart.CFrame.y + 10, v.PrimaryPart.CFrame.z), 0.01)
                     Tweeny.Completed:Wait()
                     if (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.PrimaryPart.Position).Magnitude < 20 then
