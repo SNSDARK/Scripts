@@ -14,9 +14,7 @@ if game.PlaceId == 125810438250765 then
     queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/Deadly%20Delivery.lua"))()')
     StartMatch()
 end
-
-if game.PlaceId == 125810438250765 then return end
-if getgenv().ScriptStarted then return end
+if getgenv().ScriptStarted or game.PlaceId == 125810438250765 then return end
 getgenv().ScriptStarted = true
 local function TweeningService(toTween, TargetPos, Delay)
     local TweenService = game:GetService("TweenService")
