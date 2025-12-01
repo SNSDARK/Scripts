@@ -1,6 +1,7 @@
 repeat task.wait() until game:IsLoaded() and game.Players and game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game:FindService("NetworkClient")
 task.wait(2)
 if game.PlaceId == 125810438250765 then
+    require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("BackpackSellAll")
     local function StartMatch()
         for _, v in pairs(game:GetService("Workspace").Match:GetChildren()) do
             if v and v:FindFirstChild("Left") and v.Left:FindFirstChild("ScreenPart") and v.Left.ScreenPart:FindFirstChild("SurfaceGui") and v.Left.ScreenPart.SurfaceGui:FindFirstChild("Creating") and v.Left.ScreenPart.SurfaceGui:FindFirstChild("Countdown") and (not v.Left.ScreenPart.SurfaceGui.Creating.Visible and not v.Left.ScreenPart.SurfaceGui.Countdown.Visible) then
@@ -45,10 +46,6 @@ end
 
 local function CollectOpenItem(inst)
     require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("Interactable", inst)
-end
-
-local function SellAll()
-    require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("BackpackSellAll")
 end
 
 local function CheckFullInv()
