@@ -12,9 +12,12 @@ if not game:GetService("Workspace"):GetAttribute("Take") then
         end
     end
     StartMatch()
+    queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/Deadly%20Delivery.lua"))()')
 end
 
 if not game:GetService("Workspace"):GetAttribute("Take") or not game:GetService("Workspace"):GetAttribute("Map") then print("Not in dungeon") return end
+if getgenv().ScriptStarted then return end
+getgenv().ScriptStarted = true
 local function TweeningService(toTween, TargetPos, Delay)
     local TweenService = game:GetService("TweenService")
     local tweenInfo = TweenInfo.new(
@@ -323,3 +326,4 @@ end
 
 task.spawn(AutoDungeon)
 task.spawn(NextFloorVote)
+queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/Deadly%20Delivery.lua"))()')
