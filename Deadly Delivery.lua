@@ -23,13 +23,13 @@ if game.PlaceId == 125810438250765 then
                 break
             end
         end
-    end
-    while task.wait() do
-        if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text >= game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text then
-            break
+        while task.wait() do
+            if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text >= game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text then
+                break
+            end
+            CurrentLevel = CurrentLevel + 1
+            require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("BackpackAddCapacity", CurrentLevel)
         end
-        CurrentLevel = CurrentLevel + 1
-        require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("BackpackAddCapacity", CurrentLevel)
     end
     queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/Deadly%20Delivery.lua"))()')
     StartMatch()
