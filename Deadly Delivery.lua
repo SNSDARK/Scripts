@@ -12,6 +12,10 @@ if game.PlaceId == 125810438250765 then
             end
         end
     end
+    for i = 1, 1000 do
+        require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("BackpackAddCapacity", i)
+        task.wait()
+    end
     queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/Deadly%20Delivery.lua"))()')
     StartMatch()
 end
