@@ -12,7 +12,7 @@ if game.PlaceId == 125810438250765 then
             end
         end
     end
-    for i = 1, 1000 do
+    for i = 1, 100 do
         require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("BackpackAddCapacity", i)
         task.wait()
     end
