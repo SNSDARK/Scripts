@@ -209,7 +209,7 @@ local function CollectAllItems()
                             CollectOpenItem(v)
                         end
                     end
-                until not v
+                until not v or not HasPrimaryPart(v) or v.Parent == nil
             end
         end
     end
