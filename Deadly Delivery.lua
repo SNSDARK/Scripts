@@ -12,7 +12,7 @@ if game.PlaceId == 125810438250765 then
             end
         end
     end
-    local CurrentLevel = 0
+    --[[local CurrentLevel = 0
     if tonumber(game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text) >= tonumber(string.match(game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text, "(%d+)")) then
         while task.wait() do
             if tonumber(game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text) < tonumber(string.match(game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text, "(%d+)")) then
@@ -21,7 +21,7 @@ if game.PlaceId == 125810438250765 then
             CurrentLevel = CurrentLevel + 1
             require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("BackpackAddCapacity", CurrentLevel)
         end
-    end
+    end]]
     queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/Deadly%20Delivery.lua"))()')
     StartMatch()
 end
@@ -204,6 +204,9 @@ local function CollectAllItems()
                     end
                     local Tweeny = TweeningService(game:GetService("Players").LocalPlayer.Character.HumanoidRootPart, CFrame.new(v.PrimaryPart.CFrame.x, v.PrimaryPart.CFrame.y + 10, v.PrimaryPart.CFrame.z), 0.01)
                     Tweeny.Completed:Wait()
+                    if not v or not HasPrimaryPart(v) or not v:GetAttribute("en") then
+                        break
+                    end
                     if (game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position - v.PrimaryPart.Position).Magnitude < 20 then
                         if not hasCollected or initialDelayPassed or SecondDelayPassed then
                             if initialDelayPassed then initialDelayPassed = false end; if SecondDelayPassed then SecondDelayPassed = false end
