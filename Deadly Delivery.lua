@@ -14,16 +14,18 @@ if game.PlaceId == 125810438250765 then
     end
     local LastCash = game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text
     local CurrentLevel = 0
-    for i = 1, 1000 do
-        require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("BackpackAddCapacity", i)
-        task.wait()
-        if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text < LastCash or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Tip.Visible and game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Tip.TipContent.Text == "Not Enough Cash") then
-            CurrentLevel = i
-            break
+    if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text >= game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text then
+        for i = 1, 1000 do
+            require(game:GetService("ReplicatedStorage").Shared.Core.TEvent).FireRemote("BackpackAddCapacity", i)
+            task.wait()
+            if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text < LastCash or (game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Tip.Visible and game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Tip.TipContent.Text == "Not Enough Cash") then
+                CurrentLevel = i
+                break
+            end
         end
     end
     while task.wait() do
-        if game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text > game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text then
+        if game:GetService("Players").LocalPlayer.PlayerGui.Main.HomePage.TopBar.Cash.Frame.TextLabel.Text >= game:GetService("Players").LocalPlayer.PlayerGui.Main.Func.Backpack.Content.Title.Capacity.Add.TextLabel.Text then
             break
         end
         CurrentLevel = CurrentLevel + 1
