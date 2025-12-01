@@ -1,6 +1,6 @@
 repeat task.wait() until game:IsLoaded() and game.Players and game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game:FindService("NetworkClient")
 task.wait(2)
-if not game:GetService("Workspace"):GetAttribute("Take") then
+if game.PlaceId == 125810438250765 then
     local function StartMatch()
         for _, v in pairs(game:GetService("Workspace").Match:GetChildren()) do
             if v and v:FindFirstChild("Left") and v.Left:FindFirstChild("ScreenPart") and v.Left.ScreenPart:FindFirstChild("SurfaceGui") and v.Left.ScreenPart.SurfaceGui:FindFirstChild("Creating") and v.Left.ScreenPart.SurfaceGui:FindFirstChild("Countdown") and (not v.Left.ScreenPart.SurfaceGui.Creating.Visible and not v.Left.ScreenPart.SurfaceGui.Countdown.Visible) then
@@ -11,11 +11,11 @@ if not game:GetService("Workspace"):GetAttribute("Take") then
             end
         end
     end
-    StartMatch()
     queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/Deadly%20Delivery.lua"))()')
+    StartMatch()
 end
 
-if not game:GetService("Workspace"):GetAttribute("Take") or not game:GetService("Workspace"):GetAttribute("Map") then print("Not in dungeon") return end
+if game.PlaceId == 125810438250765 return end
 if getgenv().ScriptStarted then return end
 getgenv().ScriptStarted = true
 local function TweeningService(toTween, TargetPos, Delay)
