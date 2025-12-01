@@ -1,3 +1,5 @@
+--Update v0.2
+
 repeat task.wait() until game:IsLoaded() and game.Players and game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game:FindService("NetworkClient")
 task.wait(2)
 if game.PlaceId == 125810438250765 then
@@ -166,6 +168,7 @@ local function CollectAllItems()
                 end)
                 if ItemPrice >= AcceptablePrice and HasPrimaryPart(v) then
                     repeat task.wait()
+                        CheckFullInv()
                         if v.Parent ~= ItemParent or not HasPrimaryPart(v) then
                             break
                         end
