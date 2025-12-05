@@ -249,90 +249,81 @@ local function canCollect()
     return tick() - lastCollect >= collectCooldown
 end
 
-local HasSimrad = false
-local success, err = pcall(setsimulationradius)
+local LootFolder = game:GetService("Workspace").GameSystem.Loots.World
+local Elevator = Vector3.new(-310.421204, 323.808197, 406.190948)
+local pulledItems = {}
+local pullConnections = {}
 
-if success then
-    HasSimrad = true
+getgenv().PullItems = true
+
+local function IsPlayerItem(item)
+for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+    if player.Character and item:IsDescendantOf(player.Character) then
+        return true
+    end
+end
+return false
 end
 
-if HasSimrad then
-    local LootFolder = game:GetService("Workspace").GameSystem.Loots.World
-    local Elevator = Vector3.new(-310.421204, 323.808197, 406.190948)
-    local pulledItems = {}
-    local pullConnections = {}
+local function IsPullableItem(item)
+if not item:IsA("BasePart") then return false end
+if item.Anchored then return false end
+if not item.Parent then return false end
+if not item:IsDescendantOf(LootFolder) then return false end
+if IsPlayerItem(item) then return false end
+return true
+end
 
-    getgenv().PullItems = true
+local function AddToPullList(item)
+if IsPullableItem(item) and not table.find(pulledItems, item) then
+    item.CanCollide = false
+    sethiddenproperty(item, "NetworkOwnershipRule", Enum.NetworkOwnership.Manual)
+    table.insert(pulledItems, item)
+end 
+end
 
-    local function IsPlayerItem(item)
-    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-        if player.Character and item:IsDescendantOf(player.Character) then
-            return true
-        end
-    end
-    return false
-    end
+local function RemoveFromPullList(item)
+local index = table.find(pulledItems, item)
+if index then
+    table.remove(pulledItems, index)
+end
+end
 
-    local function IsPullableItem(item)
-    if not item:IsA("BasePart") then return false end
-    if item.Anchored then return false end
-    if not item.Parent then return false end
-    if not item:IsDescendantOf(LootFolder) then return false end
-    if IsPlayerItem(item) then return false end
-    return true
-    end
+-- Initialize: Add existing items and set up connections
+for _, item in ipairs(LootFolder:GetDescendants()) do
+AddToPullList(item)
+end
 
-    local function AddToPullList(item)
-    if IsPullableItem(item) and not table.find(pulledItems, item) then
-        item.CanCollide = false
-        sethiddenproperty(item, "NetworkOwnershipRule", Enum.NetworkOwnership.Manual)
-        table.insert(pulledItems, item)
-    end 
-    end
+pullConnections.Added = LootFolder.DescendantAdded:Connect(AddToPullList)
+pullConnections.Removed = LootFolder.DescendantRemoving:Connect(RemoveFromPullList)
 
-    local function RemoveFromPullList(item)
-    local index = table.find(pulledItems, item)
-    if index then
-        table.remove(pulledItems, index)
-    end
-    end
+-- Main pulling loop
+pullConnections.Heartbeat = game:GetService("RunService").Heartbeat:Connect(function()
+if not getgenv().PullItems then return end
 
-    -- Initialize: Add existing items and set up connections
-    for _, item in ipairs(LootFolder:GetDescendants()) do
-    AddToPullList(item)
-    end
+setsimulationradius(math.huge)
 
-    pullConnections.Added = LootFolder.DescendantAdded:Connect(AddToPullList)
-    pullConnections.Removed = LootFolder.DescendantRemoving:Connect(RemoveFromPullList)
-
-    -- Main pulling loop
-    pullConnections.Heartbeat = game:GetService("RunService").Heartbeat:Connect(function()
-    if not getgenv().PullItems then return end
-
-    setsimulationradius(math.huge)
-
-    if #pulledItems > 0 then
-        for i = #pulledItems, 1, -1 do
-            local item = pulledItems[i]
-            if item and item.Parent and item:IsA("BasePart") and not item.Anchored then
-                local targetPos = Elevator
-                local distance = (item.Position - targetPos).Magnitude
-                local lastVelocity = item.Velocity
-                if distance > 3 then
-                    item.Velocity = (targetPos - item.Position).Unit * 150
-                    item.CanCollide = false
-                else
-                    item.Velocity = lastVelocity
-                    item.CanCollide = true
-                    table.remove(pulledItems, i)
-                end
+if #pulledItems > 0 then
+    for i = #pulledItems, 1, -1 do
+        local item = pulledItems[i]
+        if item and item.Parent and item:IsA("BasePart") and not item.Anchored then
+            local targetPos = Elevator
+            local distance = (item.Position - targetPos).Magnitude
+            local lastVelocity = item.Velocity
+            if distance > 3 then
+                item.Velocity = (targetPos - item.Position).Unit * 150
+                item.CanCollide = false
             else
+                item.Velocity = lastVelocity
+                item.CanCollide = true
                 table.remove(pulledItems, i)
             end
+        else
+            table.remove(pulledItems, i)
         end
     end
-    end)
 end
+end)
 
 local function AutoCollect()
     local TEvent = require(game:GetService("ReplicatedStorage").Shared.Core.TEvent)
@@ -351,54 +342,6 @@ local function AutoCollect()
             end
             until not CheckInteractables("Chests")
             print("Done Opening Stuff")
-        end
-        if CheckInteractables("Items") and not HasSimrad then
-            print("Collecting Items")
-            repeat task.wait()
-                for _, v in pairs(game:GetService("Workspace").GameSystem.Loots.World:GetChildren()) do
-                    if not HasSimrad and v and v:IsA("Tool") and v:GetAttribute("Size") and v:GetAttribute("en") and v:HasTag("Interactable") and not v:GetAttribute("Nigga") and (v:FindFirstChild("Folder") and v.Folder:FindFirstChild("Interactable") and v.Folder.Interactable:FindFirstChild("LootUI") and v.Folder.Interactable.LootUI:FindFirstChild("Frame") and v.Folder.Interactable.LootUI.Frame:FindFirstChild("ItemName") and v.Folder.Interactable.LootUI.Frame.ItemName.Text ~= "Bloxy Cola") then
-                        local CurrentFloorText = game:GetService("Workspace")["\231\148\181\230\162\175"]["\231\167\187\229\138\1681"]["\231\148\181\230\162\175\233\151\168\229\143\163"].ElevatorUI.SurfaceGui.Frame.PowerText.Text
-                        local CurrentFloor = tonumber(string.match(CurrentFloorText, "(%d+)"))
-                        local ItemPriceText = v.Folder.Interactable.LootUI.Frame.Price.Text
-                        local ItemPrice = tonumber(string.match(ItemPriceText, "(%d+)"))
-                        local CurrentParent = v.Parent
-                        local AcceptablePrice = 0
-                        CheckFullInv()
-                        if CurrentFloor >= 20 then AcceptablePrice = 40 end; if CurrentFloor >= 18 and CurrentFloor < 20 then AcceptablePrice = 30 end; if CurrentFloor >= 10 and CurrentFloor < 18 then AcceptablePrice = 20 end; if CurrentFloor < 10 then AcceptablePrice = 10 end
-                        if ItemPrice >= AcceptablePrice then
-                            repeat
-                                task.wait()
-                                if not v or v.Parent ~= CurrentParent or v:GetAttribute("Nigga") then
-                                    break
-                                end
-                                pcall(function()
-                                    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(v.PrimaryPart.CFrame.x, v.PrimaryPart.CFrame.y + 10, v.PrimaryPart.CFrame.z)
-                                end)
-                                if canCollect() then
-                                    lastCollect = tick()
-                                    TEvent.FireRemote("Interactable", v)
-                                    if not v:GetAttribute("PickedUp") then
-                                        v:SetAttribute("PickedUp", 1)
-                                    else
-                                        if v:GetAttribute("PickedUp") >= 20 then
-                                            v:SetAttribute("Nigga", true)
-                                            print(v.Folder.Interactable.LootUI.Frame.ItemName.Text.." was unable to pick up with price of $"..ItemPrice.."\nItem ID: "..v:GetAttribute("id").."\nUnique ID: "..v:GetAttribute("uid").."\nStuff: "..require(game:GetService("ReplicatedStorage").Shared.Core.ConstFunc).GetType(v:GetAttribute("id")))
-                                            for i2,v2 in pairs(v:GetTags()) do
-                                                print(i2,v2)
-                                            end
-                                            break
-                                        else
-                                            local CurrentCount = v:GetAttribute("PickedUp") + 1
-                                            v:SetAttribute("PickedUp", CurrentCount)
-                                        end
-                                    end
-                                end
-                            until not v or v.Parent ~= CurrentParent or v:GetAttribute("Nigga")
-                        end
-                    end
-                end
-            until not CheckInteractables("Items")
-            print("Done Collecting Items")
         end
         if CheckInteractables("NPC") then
             print("Rescuing NPCs")
