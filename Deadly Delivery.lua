@@ -254,6 +254,9 @@ local success, err = pcall(setsimulationradius)
 
 if success then
     HasSimrad = true
+end
+
+if HasSimrad then
     local LootFolder = game:GetService("Workspace").GameSystem.Loots.World
     local Elevator = Vector3.new(-310.421204, 323.808197, 406.190948)
     local pulledItems = {}
@@ -262,41 +265,41 @@ if success then
     getgenv().PullItems = true
 
     local function IsPlayerItem(item)
-        for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-            if player.Character and item:IsDescendantOf(player.Character) then
-                return true
-            end
+    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+        if player.Character and item:IsDescendantOf(player.Character) then
+            return true
         end
-        return false
+    end
+    return false
     end
 
     local function IsPullableItem(item)
-        if not item:IsA("BasePart") then return false end
-        if item.Anchored then return false end
-        if not item.Parent then return false end
-        if not item:IsDescendantOf(LootFolder) then return false end
-        if IsPlayerItem(item) then return false end
-        return true
+    if not item:IsA("BasePart") then return false end
+    if item.Anchored then return false end
+    if not item.Parent then return false end
+    if not item:IsDescendantOf(LootFolder) then return false end
+    if IsPlayerItem(item) then return false end
+    return true
     end
 
     local function AddToPullList(item)
-        if IsPullableItem(item) and not table.find(pulledItems, item) then
-            item.CanCollide = false
-            sethiddenproperty(item, "NetworkOwnershipRule", Enum.NetworkOwnership.Manual)
-            table.insert(pulledItems, item)
-        end 
+    if IsPullableItem(item) and not table.find(pulledItems, item) then
+        item.CanCollide = false
+        sethiddenproperty(item, "NetworkOwnershipRule", Enum.NetworkOwnership.Manual)
+        table.insert(pulledItems, item)
+    end 
     end
 
     local function RemoveFromPullList(item)
-        local index = table.find(pulledItems, item)
-        if index then
-            table.remove(pulledItems, index)
-        end
+    local index = table.find(pulledItems, item)
+    if index then
+        table.remove(pulledItems, index)
+    end
     end
 
     -- Initialize: Add existing items and set up connections
     for _, item in ipairs(LootFolder:GetDescendants()) do
-        AddToPullList(item)
+    AddToPullList(item)
     end
 
     pullConnections.Added = LootFolder.DescendantAdded:Connect(AddToPullList)
@@ -304,30 +307,30 @@ if success then
 
     -- Main pulling loop
     pullConnections.Heartbeat = game:GetService("RunService").Heartbeat:Connect(function()
-        if not getgenv().PullItems then return end
-        
-        setsimulationradius(math.huge)
-        
-        if #pulledItems > 0 then
-            for i = #pulledItems, 1, -1 do
-                local item = pulledItems[i]
-                if item and item.Parent and item:IsA("BasePart") and not item.Anchored then
-                    local targetPos = Elevator
-                    local distance = (item.Position - targetPos).Magnitude
-                    local lastVelocity = item.Velocity
-                    if distance > 3 then
-                        item.Velocity = (targetPos - item.Position).Unit * 150
-                        item.CanCollide = false
-                    else
-                        item.Velocity = lastVelocity
-                        item.CanCollide = true
-                        table.remove(pulledItems, i)
-                    end
+    if not getgenv().PullItems then return end
+
+    setsimulationradius(math.huge)
+
+    if #pulledItems > 0 then
+        for i = #pulledItems, 1, -1 do
+            local item = pulledItems[i]
+            if item and item.Parent and item:IsA("BasePart") and not item.Anchored then
+                local targetPos = Elevator
+                local distance = (item.Position - targetPos).Magnitude
+                local lastVelocity = item.Velocity
+                if distance > 3 then
+                    item.Velocity = (targetPos - item.Position).Unit * 150
+                    item.CanCollide = false
                 else
+                    item.Velocity = lastVelocity
+                    item.CanCollide = true
                     table.remove(pulledItems, i)
                 end
+            else
+                table.remove(pulledItems, i)
             end
         end
+    end
     end)
 end
 
