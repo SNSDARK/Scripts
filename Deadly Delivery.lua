@@ -526,7 +526,7 @@ local function AutoCollectOpen()
                                 local timeSinceTeleport = tick() - v:GetAttribute("Teleported")
                                 
                                 -- Fixed logic: properly parenthesized
-                                if (CanSetSimulationRadius and timeSinceTeleport >= 2) or not CanSetSimulationRadius then
+                                if (CanSetSimulationRadius and timeSinceTeleport >= 5 or v.Folder.Interactable.LootUI.Frame.ItemName.Text == "Crocodile Egg") or not CanSetSimulationRadius then
                                     local lastParent = v.Parent
                                     repeat 
                                         task.wait()
