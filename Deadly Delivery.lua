@@ -579,7 +579,7 @@ local function AlwaysInElevator()
     while task.wait() do
         if ValueMod.IsHidding.Value ~= "InElevator" then
             TEvent.FireRemote("PlayerInElevator", true, game.Players.LocalPlayer.Character.PrimaryPart.CFrame.Position, TEvent.UnixTimeMillis())
-            task.wait(1)
+            task.wait(.1)
         end
     end
 end
