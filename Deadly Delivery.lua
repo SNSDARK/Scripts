@@ -542,9 +542,7 @@ local function AutoCollectOpen()
                                                 v:SetAttribute("Nigga", true)
                                             end
                                         end
-                                    until not v or v.Parent ~= lastParent or v:GetAttribute("Nigga") or not HasPrimaryPart(v)
-                                elseif timeSinceTeleport < 2 and CanSetSimulationRadius then
-                                    CollectOpen(v)
+                                    until not v or v.Parent ~= lastParent or v:GetAttribute("Nigga") or not HasPrimaryPart(v)\
                                 end
                             end
                         end
