@@ -542,7 +542,7 @@ local function AutoCollectOpen()
                                                 v:SetAttribute("Nigga", true)
                                             end
                                         end
-                                    until not v or v.Parent ~= lastParent or v:GetAttribute("Nigga") or not HasPrimaryPart(v)\
+                                    until not v or v.Parent ~= lastParent or v:GetAttribute("Nigga") or not HasPrimaryPart(v)
                                 end
                             end
                         end
