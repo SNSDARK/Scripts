@@ -531,11 +531,13 @@ local function AutoCollectOpen()
                                     repeat 
                                         task.wait()
                                         if HasPrimaryPart(v) then
-                                            pcall(function()
-                                                PLR.Character.HumanoidRootPart.CFrame = CFrame.new(
-                                                    v.PrimaryPart.Position + Vector3.new(0, 10, 0)
-                                                )
-                                            end)
+                                            if (v.PrimaryPart.Position - PLR.Character.HumanoidRootPart.Position).Magnitude > 20 and CanSetSimulationRadius or (v:FindFirstChild("Folder") and v.Folder.Interactable.LootUI.Frame.ItemName.Text == "Crocodile Egg" or not CanSetSimulationRadius) then
+                                                pcall(function()
+                                                    PLR.Character.HumanoidRootPart.CFrame = CFrame.new(
+                                                        v.PrimaryPart.Position + Vector3.new(0, 10, 0)
+                                                    )
+                                                end)
+                                            end
                                             CheckFullInv()
                                             CollectOpen(v)
                                             if v:GetAttribute("InteractCount") and v:GetAttribute("InteractCount") >= 5 then
