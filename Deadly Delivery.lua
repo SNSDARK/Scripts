@@ -276,13 +276,16 @@ getgenv().PullItems = true
 
 local CanSetSimulationRadius = false
 local success, err = pcall(function()
+    local current = getsimulationradius()
     setsimulationradius(math.huge)
+    -- Try to set it back to verify it works
+    setsimulationradius(current)
+    CanSetSimulationRadius = true
 end)
 
-if success then
-    CanSetSimulationRadius = true
-else
-    warn("setsimulationradius not supported")
+if not success then
+    warn("setsimulationradius not functional: " .. tostring(err))
+    CanSetSimulationRadius = false
 end
 
 local function IsPlayerItem(item)
