@@ -1,4 +1,3 @@
-
 loadstring(game:HttpGet("https://raw.githubusercontent.com/SNSDARK/Scripts/refs/heads/main/Auto-Reconnect-Universal.lua"))()
 repeat task.wait() until game:IsLoaded() and game.Players and game.Players.LocalPlayer and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and game:FindService("NetworkClient")
 if getgenv().ScriptStarted then return end
@@ -391,23 +390,30 @@ local function NextFloorVote()
         for i,v in ValueMod.DungeonStats._value.loots do
             TotalCash = TotalCash + v.sell
         end
-        local SoldItems = "No"
-        if goLobby then
-            SoldItems = "Yes"
+        local BestFoodID = ""
+        local BestFoodValue = 0
+        local ItemConfig = require(game:GetService("ReplicatedStorage").Config.item_loot)
+        for _, foodData in ValueMod.GetAllValue().DungeonStats.loots do
+            if foodData.sell and foodData.id and foodData.sell > BestFoodValue then
+                BestFoodValue = foodData.sell
+                BestFoodID = foodData.id
+            end
         end
+        local BestFoodName = ItemConfig[BestFoodID] and ItemConfig[BestFoodID].name or "Unknown"
+        local BestFood = BestFoodName .. " | $" .. BestFoodValue
         Data = game:GetService("HttpService"):JSONEncode({
             ["username"] = "Deadly Delivery Escaped",
             ["content"] = game.Players.LocalPlayer.Name,
             ["embeds"] = {{
                     ["title"] = "Money Earned",
-                    ["description"] = string.format("**$%s**\n**Goal:** $%s\n**Floor:** %s\n**Sellable + Coins Earned:** $%s + $%s\n**Total Cash:** $%s\n**Sold?:** %s\n\nUpdated %s", 
+                    ["description"] = string.format("**$%s**\n**Goal:** $%s\n**Floor:** %s\n**Sellable + Coins Earned:** $%s + $%s\n**Total Cash:** $%s\n**Best Food:** %s\n\nUpdated %s", 
                         ValueMod.DungeonStats._value.totalPrice, 
                         ValueMod.DungeonStats._value.goal,
                         ValueMod.DungeonStats._value.level,
                         TotalCash,
                         ValueMod.DungeonStats._value.cash,
                         ValueMod.Item._value[101],
-                        SoldItems,
+                        BestFood,
                         string.format("<t:%d:R>", os.time())
                     ),
                     ["color"] = 5763719, -- Blue color
